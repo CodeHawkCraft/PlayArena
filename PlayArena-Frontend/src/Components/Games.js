@@ -10,6 +10,7 @@ import { useRef } from 'react';
 import { useCookies } from 'react-cookie';
 const Games = () => {
   const backendApi = process.env.REACT_APP_BACKEND_DEV;
+  // const backendApi='';
   const [cookies, setCookie] = useCookies(['playerId'])
     const [name,setName]=useState('');
     const inputElement = useRef();
@@ -22,10 +23,13 @@ const Games = () => {
 
     const [nameError,setNameError]=useState(false);
     const createRoom = async() => {
+      console.log('create room called bro----->');
+      
       if (!name) {
         setNameError(true);
         return;
       }
+      if(nameError) setNameError(false);
 
 
       
@@ -51,8 +55,6 @@ const Games = () => {
 
 
       socketConnection.on('startGame', (data) => {
-        socketDispatch({ type: 'sendData', payload: {users:data.users,turn:data.turn,currentUserName:data.currentUserName} });
-        dispatch({type:'SET_DATA',payload:data.gamesData});
         navigate(`/game/chess?roomId=${data.roomId}`);
       });
 

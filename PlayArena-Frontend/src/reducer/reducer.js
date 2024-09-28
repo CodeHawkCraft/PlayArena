@@ -106,16 +106,11 @@ export const socketReducer=(state,action)=>{
     }
     return object;
    }
-   if(action.type==='sendData'){
+   if(action.type==='sendData' || action.type==='updateGame'){
     return {
         ...state,
         ...action.payload
     }
    }
-   if(action.type==='updateGame'){
-    return {
-        ...state,
-        ...action.payload
-    }
-   }
+  
 }

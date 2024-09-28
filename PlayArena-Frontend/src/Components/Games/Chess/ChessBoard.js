@@ -43,7 +43,6 @@ const ChessBoard = () => {
   function listenToErrors(socketConnection){
     socketConnection.on('error',(message)=>{
       toast.error(message);
-      // setSearchParams('');
     });
   }
 
@@ -63,6 +62,8 @@ const ChessBoard = () => {
       setNameError(true);
       return;
     }
+    if(nameError) setNameError(false);
+
     let socketConnection=socketIO.connect('http://localhost:4000');
 
 
@@ -73,8 +74,9 @@ const ChessBoard = () => {
     listenToUserMoves(socketConnection);
 
     socketConnection.on('startGame', (data) => {
-      socketDispatch({ type: 'sendData', payload: {users:data.users,turn:data.turn,currentUserName:data.currentUserName} });
-        dispatch({type:'SET_DATA',payload:data.gamesData});
+     
+      
+      socketDispatch({ type: 'sendData', payload: {...data} });
       setshowPopUp(false);
     });
 
@@ -88,11 +90,18 @@ const ChessBoard = () => {
 
   function joinWithCookie(playerID){
     let socketConnection=socketIO.connect('http://localhost:4000');
-    socketConnection.on('gamesData',(data)=>{
-      socketDispatch({ type: 'sendData', payload:{socketConnection  , users: data.users,turn:data.turn,currentUserName:data.currentUserName} });
-      dispatch({type:'SET_DATA',payload:data.gamesData});
-    })
+    socketConnection.on("gamesData", (data) => {
+      console.log('data is -----> ',data);
+      socketDispatch({
+        type: "sendData",
+        payload: {
+          ...data
+        },
+      });
+      dispatch({ type: "SET_DATA", payload: data.gamesData });
+    });
 
+    listenToErrors(socketConnection);
 
     listenToUserMoves(socketConnection);
 
@@ -111,11 +120,13 @@ const ChessBoard = () => {
 
 
   useEffect(()=>{
+    // when cookie not present but roomId => means user join first time
     if(!socketState.socketConnection && !cookies.playerId && roomId){
       setshowPopUp(true);
     }
 
-    else if(cookies.playerId){
+    //  // when cookie  and roomId present => means user refresh page in game
+    else if(cookies.playerId && roomId){
       joinWithCookie(cookies.playerId);
     }
     else{

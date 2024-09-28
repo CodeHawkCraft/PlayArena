@@ -12,7 +12,7 @@ const Pieces = () => {
   let [searchParams, setSearchParams] = useSearchParams(window.navigator.search );
   const roomId=searchParams.get('roomId');
   const { appState , dispatch } = useAppContext();
-
+  
   
   const currentPosition = appState.position[appState.position.length-1]
   const calculatedDroppedPoints=(e)=>{
@@ -131,30 +131,16 @@ const Pieces = () => {
       } 
       newObject[rowDropped][colDropped] = piece;
       newObject[rank][file] = "";
-      // const ab=
       const newMove=numberToCharacters(colDropped)+ Number(8-(rowDropped));
       let turn;
       if(socketState.users){
-       turn = socketState.users.filter(
-        (el) => el != socketState.turn
-      )[0];
+
+      const currentUser = socketState.users.find(el => el.userName !== socketState.turn);
+      turn = currentUser ? currentUser.userName : null
     }
       dispatch(makeNewMove({ newPosition: newObject, newMove, lostPieces, socketConnection: socketState.socketConnection, roomId,turn }));
       dispatch(clearCandidates({socketConnection: socketState.socketConnection,roomId}));
-      // if (socketState.socketConnection) {
-      //   const moveData = {
-      //     newPosition: newObject,
-      //     newMove,
-      //     lostPieces,
-      //     turn: appState.turn === 'w' ? 'b' : 'w', // Switch turns
-      //     status: appState.status,
-      //     promotionSquare: appState.promotionSquare,
-      //     castleDirection: appState.castleDirection,
-      //     movesList: [...appState.movesList, newMove], // Add the new move to the moves list
-      //   };
-  
-      //   socketState.socketConnection.emit('move', moveData);
-      // }
+   
     }
 
   }

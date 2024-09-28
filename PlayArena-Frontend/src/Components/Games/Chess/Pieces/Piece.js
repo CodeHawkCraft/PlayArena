@@ -5,7 +5,11 @@ import arbiter from '../../arbiter/arbiter';
 import { generateCandidates } from '../../../../reducer/actions/move';
 import toast from 'react-hot-toast';
 import { useSocketContext } from '../../../../contexts/SocketContext';
+import { useCookies } from 'react-cookie';
+
 const Piece = ({rank,file,piece}) => {
+  const [cookies] = useCookies(['playerId'])
+
   const { appState, dispatch } = useAppContext();
   const {socketState,socketDispatch}=useSocketContext();
   const { turn, position :currentPosition,castleDirection } = appState
@@ -15,7 +19,13 @@ const Piece = ({rank,file,piece}) => {
        e.target.style.display = 'none'
     })
     
-  if(socketState.socketConnection && socketState.turn!=socketState.currentUserName){
+
+  let currentUserName='';
+  if(socketState.users){  
+     const currentUser = socketState.users.find(el => el.playerID === cookies.playerId);
+     currentUserName = currentUser ? currentUser.userName : null  }
+  
+  if(socketState.socketConnection && socketState.turn!=currentUserName){
     toast.error('Your Opponent Turn not Yours.',{duration: 2000,})
     return;
   }

@@ -25,7 +25,6 @@ function roomError(room, socket) {
   return false;
 }
 
-console.log('frontend url is ---> ',process.env.FRONTEND_URL);
 
 const io = socketIO(server, {
   cors: {
@@ -61,21 +60,28 @@ function userNameError(roomId, userName) {
   return roomStates[roomId].users.some((el)=>el.userName==userName);
 }
 
-io.on('connection', (socket) => {
 
+function checkUserCountError(roomId){
+  if(roomStates[roomId]?.users?.length==2){
+    return true;
+  }
+  return false;
+
+}
+io.on('connection', (socket) => {
   socket.on('create', (data) => {
     const roomId = getRoomID();
     const playerID = uuidv4();
-    roomStates[roomId] = { users: [{playerID,userName:data.userName}], gameData: {},turn:data.userName,currentUserName:data.userName }; 
+    roomStates[roomId] = { users: [{playerID,userName:data.userName}], gamesData: {},turn:data.userName }; 
     socket.join(roomId);
     socket.emit('roomId', roomId); 
     socket.emit('playerID', playerID);
-
   });
 
   socket.on('join', (data) => {
     let { roomId, userName,gamesData } = data;
     roomId=Number(roomId);
+
     if (roomError(roomId, socket)) return;
 
 
@@ -86,16 +92,19 @@ io.on('connection', (socket) => {
     }
 
 
+    if(checkUserCountError(roomId)){
+      socket.emit("error", "Sorry Room already filled");
+      return;
+    }
+   
+
     const playerID = uuidv4();
 
     roomStates[roomId].users.push({userName,playerID});
-    roomStates[roomId].gameData=gamesData;
+    roomStates[roomId].gamesData=gamesData;
     socket.join(roomId);
-
     socket.emit('playerID', playerID);
-   
-    let users=roomStates[roomId].users.map((el)=>el.userName);
-    io.to(roomId).emit('startGame',{roomId,users,gamesData,turn:roomStates[roomId].turn,currentUserName:data.userName});
+    io.to(roomId).emit('startGame',{...roomStates[roomId],roomId});
 
   });
 
@@ -105,25 +114,24 @@ io.on('connection', (socket) => {
     roomId=Number(roomId);
     if (roomError(roomId, socket)) return;
 
-    
     // checkPlayer
     let result=roomStates[roomId].users.some((el)=>el.playerID==playerID);
     if(result){
       socket.join(roomId);
-      let currentUserName=roomStates[roomId].users.filter(el=>el.playerID==playerID)[0].userName;
-      let users=roomStates[roomId].users.map((el)=>el.userName);
-        socket.emit('gamesData',{gamesData:roomStates[roomId].gameData,users,turn:roomStates[roomId].turn,currentUserName});
+        socket.emit('gamesData',{...roomStates[roomId]});
     }
-
+    else{
+    socket.emit('error','You dont have access to this room')
+    }
   })
 
 
   socket.on('move', (data) => {
     let {roomId,gamesData,turn}=data;
     roomId=Number(roomId);
+    
+    roomStates[roomId].gamesData=gamesData;
     io.to(roomId).emit('updateMoves',{gamesData,turn});
-
-
   })
 
 
@@ -133,7 +141,7 @@ io.on('connection', (socket) => {
 
   // Handle disconnection if needed
   socket.on('disconnect', () => {
-    console.log('A user disconnected:', socket.id);
+    // console.log('A user disconnected:', socket.id);
     // Additional logic to handle disconnection and update room state
   });
 });

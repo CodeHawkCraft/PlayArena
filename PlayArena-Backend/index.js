@@ -25,6 +25,8 @@ function roomError(room, socket) {
   return false;
 }
 
+console.log('frontend url is ---> ',process.env.FRONTEND_URL);
+
 const io = socketIO(server, {
   cors: {
     origin: process.env.FRONTEND_URL,
@@ -35,6 +37,13 @@ app.get('/',(req,res)=>{
   return res.send('<h1>hell world 12</h1>')
 })
 
+app.get('/newHome',(req,res)=>{
+  return res.send('<h1>new home login bro</h1>')
+})
+
+app.get('/newRequest',(req,res)=>{
+ return res.status(200).json({message:'event come from backend'});
+})
 function getRoomID() {
   let min = 10000;
   let max = 99999;

@@ -20,17 +20,25 @@ const Games = () => {
 
 
     const [nameError,setNameError]=useState(false);
-    const createRoom = () => {
+    const createRoom = async() => {
       if (!name) {
         setNameError(true);
         return;
       }
 
- 
-      const socketConnection = socketIO.connect('http://localhost:4000');
+    let res= await fetch('http://localhost:4000/newRequest');
+    let ab=await res.json();
+      console.log('ab is ----> ',ab);
+      
+      let connection='https://playarena.onrender.com/';
+      // const socketConnection = socketIO.connect('http://localhost:4000');
+      const socketConnection = socketIO.connect(connection);
+
       socketDispatch({ type: 'connection', payload: socketConnection });
       
       socketConnection.on('roomId', (roomId) => {
+        console.log('roomId is ----> ',roomId);
+        
         let link=`http://localhost:3000/game/chess?roomId=${roomId}`;
         setsharableLink(link);
       });

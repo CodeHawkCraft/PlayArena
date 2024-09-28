@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 const PopUpWrapper = ({props}) => {
-  console.log('prop is ----> ',props);
+
   
   const title = props.title;
   const component = props.component;

@@ -375,6 +375,7 @@ justify-content: center;
   height: 100%;
   position: relative;
   border: 1px solid var(--dark-tile);
+  background-position:center;
   background-repeat: no-repeat;
   height: 100px;
   cursor: pointer;

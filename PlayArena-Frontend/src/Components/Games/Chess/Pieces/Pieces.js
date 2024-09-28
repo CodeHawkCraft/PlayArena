@@ -79,8 +79,6 @@ const Pieces = () => {
     };
 
   const onDrop = e => {
-    console.log('onDrop running bro----->');
-    
    const {rowDropped,colDropped}=calculatedDroppedPoints(e);
     const [piece,rank,file] = e.dataTransfer.getData("text").split(',');
     if (

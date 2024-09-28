@@ -15,6 +15,7 @@ import { initGameState, socketInitialState } from "./helpers";
 import { Toaster } from "react-hot-toast";
 import socketContext from "./contexts/SocketContext";
 import { reducer, socketReducer } from "./reducer/reducer";
+import ErrorPage from "./Components/ErrorPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
     path: "game/:id",
     element: <GameMapper></GameMapper>,
   },
+  {
+    path:'*',
+    element:<ErrorPage></ErrorPage>
+  }
 ]);
 
 function App() {

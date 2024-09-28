@@ -4,8 +4,6 @@ import socketContext, { useSocketContext } from "../contexts/SocketContext";
 export const reducer = (state, action) => {
     const { socketConnection, roomId,turn } = action.payload || {};
     let updatedState = { ...state };
-    // console.log('reducer run bro----->');
-    
     switch (action.type) {
         case actionTypes.NEW_MOVE: {
             const { newPosition, newMove, lostPieces: newLostPieces } = action.payload;
@@ -39,8 +37,6 @@ export const reducer = (state, action) => {
 
         case actionTypes.CLEAR_CANDIDATE_MOVES: {
             updatedState = { ...updatedState, candidateMoves: [] };
-            // console.log('updatedState after clear candidate is -----> ',updatedState);
-            
             break;
         }
 
@@ -93,6 +89,9 @@ export const reducer = (state, action) => {
     if(roomId && socketConnection){
           socketConnection.emit('move',{roomId,gamesData:updatedState,turn});
     }
+    else{
+        localStorage.setItem('gamesData',JSON.stringify(updatedState));
+    }
 
     
     return updatedState;
@@ -101,8 +100,6 @@ export const reducer = (state, action) => {
 
 
 export const socketReducer=(state,action)=>{
-    console.log('action is ----> ',action);
-    
    if(action.type==='connection'){
     const object= {
         socketConnection:action.payload

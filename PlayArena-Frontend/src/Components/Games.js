@@ -9,6 +9,7 @@ import CircularLoading from '../helpers/Components/CircularLoading';
 import { useRef } from 'react';
 import { useCookies } from 'react-cookie';
 const Games = () => {
+  const backendApi = process.env.REACT_APP_BACKEND_DEV;
   const [cookies, setCookie] = useCookies(['playerId'])
     const [name,setName]=useState('');
     const inputElement = useRef();
@@ -26,13 +27,11 @@ const Games = () => {
         return;
       }
 
-    let res= await fetch('http://localhost:4000/newRequest');
-    let ab=await res.json();
-      console.log('ab is ----> ',ab);
+
       
-      let connection='https://playarena.onrender.com/';
+      // let connection='https://playarena.onrender.com/';
       // const socketConnection = socketIO.connect('http://localhost:4000');
-      const socketConnection = socketIO.connect(connection);
+      const socketConnection = socketIO.connect(backendApi);
 
       socketDispatch({ type: 'connection', payload: socketConnection });
       
@@ -136,10 +135,11 @@ const Games = () => {
                       <button
                         className="p-2 w-fit h-fit"
                         onClick={() => {
+                          localStorage.removeItem('gamesData');
                           navigate("/game/chess");
                         }}
                       >
-                        Start Playing 12
+                        Start Playing 
                       </button>
 
                       <button

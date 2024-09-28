@@ -89,10 +89,8 @@ const ChessBoard = () => {
   function joinWithCookie(playerID){
     let socketConnection=socketIO.connect('http://localhost:4000');
     socketConnection.on('gamesData',(data)=>{
-      console.log('data inside gamesData of socketConnection is -----> ',data);
-      // socketDispatch({type:'changeTurn'})
       socketDispatch({ type: 'sendData', payload:{socketConnection  , users: data.users,turn:data.turn,currentUserName:data.currentUserName} });
-      // dispatch({type:'SET_DATA',payload:data.gamesData});
+      dispatch({type:'SET_DATA',payload:data.gamesData});
     })
 
 
@@ -103,6 +101,14 @@ const ChessBoard = () => {
   }
 
 
+  function getLocalData(){
+   let data= localStorage.getItem('gamesData');
+   if(data){
+    data=JSON.parse(data);
+    dispatch({type:'SET_DATA',payload:{...data}});
+   }
+  }
+
 
   useEffect(()=>{
     if(!socketState.socketConnection && !cookies.playerId && roomId){
@@ -112,13 +118,15 @@ const ChessBoard = () => {
     else if(cookies.playerId){
       joinWithCookie(cookies.playerId);
     }
+    else{
+        getLocalData();
+    }
  
-
   },[]);
 
 
 
-console.log('appstate is ----> ',appState);
+
 
   const position = appState.position[appState.position.length - 1]
   const getClassName = (i,j) => {

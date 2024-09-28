@@ -5,6 +5,7 @@ import { takeBack } from '../../../helpers';
 import LostPlayers from './LostPlayers';
 import { useNavigate } from 'react-router-dom';
 import { useSocketContext } from '../../../contexts/SocketContext';
+import { initGameState } from '../../../helpers';
 const LeaderBoard = () => {
     const { appState,dispatch } = useAppContext();
     const {socketState,socketDispatch}=useSocketContext();
@@ -20,7 +21,8 @@ const LeaderBoard = () => {
 
       <MovesList />
       <LostPlayers></LostPlayers>
-      <div className="flex w-full items-center justify-center gap-10">
+      <div className="flex flex-col w-full items-center justify-center gap-10">
+        <div className='flex gap-10'>
         <button
           onClick={() => {
             dispatch(takeBack());
@@ -34,6 +36,17 @@ const LeaderBoard = () => {
           }}
         >
           All Games 
+        </button>
+
+        </div>
+
+        <button
+          onClick={() => {
+           localStorage.removeItem('gamesData');
+           dispatch({type:'SET_DATA',payload:{...initGameState}});
+          }}
+        >
+          Start New Game 
         </button>
       </div>
     </div>

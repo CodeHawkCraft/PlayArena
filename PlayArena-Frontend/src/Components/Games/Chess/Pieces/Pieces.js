@@ -135,10 +135,12 @@ const Pieces = () => {
       newObject[rank][file] = "";
       // const ab=
       const newMove=numberToCharacters(colDropped)+ Number(8-(rowDropped));
-      
-      let turn = socketState.users.filter(
+      let turn;
+      if(socketState.users){
+       turn = socketState.users.filter(
         (el) => el != socketState.turn
       )[0];
+    }
       dispatch(makeNewMove({ newPosition: newObject, newMove, lostPieces, socketConnection: socketState.socketConnection, roomId,turn }));
       dispatch(clearCandidates({socketConnection: socketState.socketConnection,roomId}));
       // if (socketState.socketConnection) {

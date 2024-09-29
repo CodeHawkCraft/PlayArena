@@ -5,8 +5,13 @@ const cors = require('cors');
 const socketIO = require('socket.io');
 const { v4: uuidv4 } = require('uuid'); // Import the v4 version of uuid
 
+console.log('frontend url is ----> ',process.env.FRONTEND_URL);
+
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: process.env.FRONTEND_URL,
+}
+));
 
 const server = createServer(app);
 
@@ -26,11 +31,7 @@ function roomError(room, socket) {
 }
 
 
-const io = socketIO(server, {
-  cors: {
-    origin: process.env.FRONTEND_URL,
-  },
-});
+const io = socketIO(server, );
 
 app.get('/',(req,res)=>{
   return res.send('<h1>hell world 12</h1>')

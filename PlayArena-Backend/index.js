@@ -9,9 +9,8 @@ console.log('frontend url is ----> ',process.env.FRONTEND_URL);
 
 const app = express();
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
-}
-));
+  origin: process.env.FRONTEND_URL,
+}));
 
 const server = createServer(app);
 
@@ -31,7 +30,11 @@ function roomError(room, socket) {
 }
 
 
-const io = socketIO(server, );
+const io = socketIO(server, {
+  cors: {
+    origin: process.env.FRONTEND_URL, 
+  }
+});
 
 app.get('/',(req,res)=>{
   return res.send('<h1>hell world 12</h1>')

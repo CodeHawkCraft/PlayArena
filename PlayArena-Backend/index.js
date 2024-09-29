@@ -113,7 +113,7 @@ io.on('connection', (socket) => {
     let { roomId, playerID } = data;
     roomId=Number(roomId);
     if (roomError(roomId, socket)) return;
-
+    
     // checkPlayer
     let result=roomStates[roomId].users.some((el)=>el.playerID==playerID);
     if(result){
@@ -129,20 +129,28 @@ io.on('connection', (socket) => {
   socket.on('move', (data) => {
     let {roomId,gamesData,turn}=data;
     roomId=Number(roomId);
-    
     roomStates[roomId].gamesData=gamesData;
-    io.to(roomId).emit('updateMoves',{gamesData,turn});
+   
+    if(turn){
+      roomStates[roomId].turn=turn;
+    }
+      io.to(roomId).emit('updateMoves',{...roomStates[roomId]});
   })
 
 
-
+  socket.on('leaveRoom', (data) => {
+    let {roomId}=data;
+    roomId=Number(roomId);
+    if(roomStates[roomId]){
+      delete roomStates[roomId];
+      io.to(roomId).emit('gameLeave');
+    }
+  });
 
 
 
   // Handle disconnection if needed
-  socket.on('disconnect', () => {
-    // console.log('A user disconnected:', socket.id);
-    // Additional logic to handle disconnection and update room state
+  socket.on('disconnect', (data) => {
   });
 });
 

@@ -26,7 +26,7 @@ const Files = ({files}) =>
   </div>
 const ChessBoard = () => {
   const {socketState,socketDispatch}=useSocketContext();
-  const [cookies, setCookie] = useCookies(['playerId'])
+  const [cookies, setCookie,removeCookie] = useCookies(['playerId'])
   const [nameError,setNameError]=useState(false);
   const [loading, setLoading] = useState(false);
     // const [initialAppState, setInitialAppState] = useState(JSON.parse(JSON.stringify(socketState)));
@@ -54,6 +54,13 @@ const ChessBoard = () => {
 
   }
 
+  function listentoGameLeave(socketConnection){
+    socketConnection.on('gameLeave',()=>{
+      removeCookie('playerId');
+      toast.success('game closed!!');
+    })
+  }
+
 
 
   const JoinRoom=()=>{
@@ -72,7 +79,7 @@ const ChessBoard = () => {
     });
 
     listenToUserMoves(socketConnection);
-
+    listentoGameLeave(socketConnection);
     socketConnection.on('startGame', (data) => {
      
       
@@ -91,7 +98,6 @@ const ChessBoard = () => {
   function joinWithCookie(playerID){
     let socketConnection=socketIO.connect('http://localhost:4000');
     socketConnection.on("gamesData", (data) => {
-      console.log('data is -----> ',data);
       socketDispatch({
         type: "sendData",
         payload: {
@@ -104,7 +110,7 @@ const ChessBoard = () => {
     listenToErrors(socketConnection);
 
     listenToUserMoves(socketConnection);
-
+    listentoGameLeave(socketConnection);
     socketDispatch({type:'connection',payload:socketConnection})
     socketConnection.emit('joinWithCookie',{playerID,roomId})
   }

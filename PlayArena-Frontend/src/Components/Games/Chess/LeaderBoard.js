@@ -6,11 +6,16 @@ import LostPlayers from './LostPlayers';
 import { useNavigate } from 'react-router-dom';
 import { useSocketContext } from '../../../contexts/SocketContext';
 import { initGameState } from '../../../helpers';
+import { useCookies } from 'react-cookie';
+import { useSearchParams } from "react-router-dom";
 const LeaderBoard = () => {
     const { appState,dispatch } = useAppContext();
     const {socketState,socketDispatch}=useSocketContext();
     const navigate=useNavigate();
+    let [searchParams,] = useSearchParams(window.navigator.search );
+    const roomId=searchParams.get('roomId');
   return (
+    <>
     <div className="flex  flex-col gap-5  w-full justify-center">
       {socketState?.users?.length === 2 ? (
         <div className='flex justify-center items-center gap-3'>
@@ -40,6 +45,7 @@ const LeaderBoard = () => {
 
         </div>
 
+        <div className='flex gap-5'>
         <button
           onClick={() => {
            localStorage.removeItem('gamesData');
@@ -48,8 +54,25 @@ const LeaderBoard = () => {
         >
           Start New Game 
         </button>
+
+        <button
+          onClick={() => {
+
+            
+            if(socketState.socketConnection && roomId){
+              socketState.socketConnection.emit('leaveRoom',{roomId});
+            }
+          }}
+        >
+          Leave Room
+        </button>
+
+
+        </div>
       </div>
     </div>
+    
+    </>
   );
 }
 

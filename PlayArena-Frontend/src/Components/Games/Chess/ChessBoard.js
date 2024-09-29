@@ -1,16 +1,12 @@
 import React, { useEffect } from 'react'
-import socketIO, { Socket } from 'socket.io-client';
+import socketIO from 'socket.io-client';
 import { useState } from 'react';
 import Pieces from './Pieces/Pieces'
-import { numberToCharacters,takeBack } from '../../../helpers'
+import { numberToCharacters } from '../../../helpers'
 import { useAppContext } from '../../../contexts/Context'
 import PopUpWrapper from '../../PopUpWrapper';
 import PopUp from './PopUp/PopUp';
-import MovesList from './MovesList'
-import { useParams } from 'react-router-dom'
-import { useLocation } from 'react-router-dom';
 import { useSearchParams } from "react-router-dom";
-import CircularLoading from '../../../helpers/Components/CircularLoading';
 import { useSocketContext } from '../../../contexts/SocketContext';
 import toast from 'react-hot-toast';
 import { useCookies } from 'react-cookie';
@@ -25,13 +21,14 @@ const Files = ({files}) =>
       {files.map(file => <span className='file' key={file}>{numberToCharacters(file)}</span>)}
   </div>
 const ChessBoard = () => {
+  const backendApi = process.env.REACT_APP_BACKEND_PROD;
   const {socketState,socketDispatch}=useSocketContext();
   const [cookies, setCookie,removeCookie] = useCookies(['playerId'])
   const [nameError,setNameError]=useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading,] = useState(false);
     // const [initialAppState, setInitialAppState] = useState(JSON.parse(JSON.stringify(socketState)));
   const [name,setName]=useState('');
-  let [searchParams, setSearchParams] = useSearchParams(window.navigator.search );
+  let [searchParams,] = useSearchParams(window.navigator.search );
   const ranks=Array(8).fill().map((el,index)=>8-index);
   const [showPopUp, setshowPopUp] = useState(false);
   const files=Array(8).fill().map((el,index)=>index);
@@ -71,7 +68,7 @@ const ChessBoard = () => {
     }
     if(nameError) setNameError(false);
 
-    let socketConnection=socketIO.connect('http://localhost:4000');
+    let socketConnection=socketIO.connect(backendApi);
 
 
     socketConnection.on('playerID', (playerId) => {
@@ -96,7 +93,7 @@ const ChessBoard = () => {
 
 
   function joinWithCookie(playerID){
-    let socketConnection=socketIO.connect('http://localhost:4000');
+    let socketConnection=socketIO.connect(backendApi);
     socketConnection.on("gamesData", (data) => {
       socketDispatch({
         type: "sendData",

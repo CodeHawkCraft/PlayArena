@@ -5,25 +5,23 @@ import { useState } from 'react';
 import socketIO from 'socket.io-client';
 import { useSocketContext } from '../contexts/SocketContext';
 import { useAppContext } from '../contexts/Context';
-import CircularLoading from '../helpers/Components/CircularLoading';
 import { useRef } from 'react';
 import { useCookies } from 'react-cookie';
 const Games = () => {
-  const backendApi = process.env.REACT_APP_BACKEND_DEV;
-  // const backendApi='';
+  const backendApi = process.env.REACT_APP_BACKEND_PROD;
+  const frontendURl=process.env.REACT_APP_FRONTEND_PROD;
   const [cookies, setCookie] = useCookies(['playerId'])
     const [name,setName]=useState('');
     const inputElement = useRef();
     const [sharableLink, setsharableLink] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { appState,dispatch } = useAppContext();
-    const {socketState,socketDispatch}=useSocketContext();
+    const { appState } = useAppContext();
+    const {socketDispatch}=useSocketContext();
 
 
     const [nameError,setNameError]=useState(false);
     const createRoom = async() => {
-      console.log('create room called bro----->');
       
       if (!name) {
         setNameError(true);
@@ -33,16 +31,12 @@ const Games = () => {
 
 
       
-      // let connection='https://playarena.onrender.com/';
-      // const socketConnection = socketIO.connect('http://localhost:4000');
       const socketConnection = socketIO.connect(backendApi);
 
       socketDispatch({ type: 'connection', payload: socketConnection });
       
       socketConnection.on('roomId', (roomId) => {
-        console.log('roomId is ----> ',roomId);
-        
-        let link=`http://localhost:3000/game/chess?roomId=${roomId}`;
+        let link=`${frontendURl}game/chess?roomId=${roomId}`;
         setsharableLink(link);
       });
 
@@ -72,34 +66,7 @@ const Games = () => {
             title: 'Tic Tac Toe',
             image: 'https://images.unsplash.com/photo-1668901382969-8c73e450a1f5?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHRpYyUyMHRhYyUyMHRvZXxlbnwwfHwwfHx8MA%3D%3D',
         },
-        // {
-        //     title: 'Chess',
-        //     image: 'https://images.unsplash.com/photo-1606594914778-09d99f53ecf7?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y2hlc3N8ZW58MHx8MHx8fDA%3D',
-        // },
-        // {
-        //     title: 'Chess',
-        //     image: 'https://images.unsplash.com/photo-1606594914778-09d99f53ecf7?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y2hlc3N8ZW58MHx8MHx8fDA%3D',
-        // },
-        // {
-        //     title: 'Chess',
-        //     image: 'https://images.unsplash.com/photo-1606594914778-09d99f53ecf7?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y2hlc3N8ZW58MHx8MHx8fDA%3D',
-        // },
-        // {
-        //     title: 'Chess',
-        //     image: 'https://images.unsplash.com/photo-1606594914778-09d99f53ecf7?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y2hlc3N8ZW58MHx8MHx8fDA%3D',
-        // },
-        // {
-        //     title: 'Chess',
-        //     image: 'https://images.unsplash.com/photo-1606594914778-09d99f53ecf7?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y2hlc3N8ZW58MHx8MHx8fDA%3D',
-        // },
-        // {
-        //     title: 'Chess',
-        //     image: 'https://images.unsplash.com/photo-1606594914778-09d99f53ecf7?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y2hlc3N8ZW58MHx8MHx8fDA%3D',
-        // },
-        // {
-        //     title: 'Chess',
-        //     image: 'https://images.unsplash.com/photo-1606594914778-09d99f53ecf7?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y2hlc3N8ZW58MHx8MHx8fDA%3D',
-        // },
+       
        
     ]
   

@@ -6,11 +6,10 @@ import LostPlayers from './LostPlayers';
 import { useNavigate } from 'react-router-dom';
 import { useSocketContext } from '../../../contexts/SocketContext';
 import { initGameState } from '../../../helpers';
-import { useCookies } from 'react-cookie';
 import { useSearchParams } from "react-router-dom";
 const LeaderBoard = () => {
-    const { appState,dispatch } = useAppContext();
-    const {socketState,socketDispatch}=useSocketContext();
+    const { dispatch } = useAppContext();
+    const {socketState}=useSocketContext();
     const navigate=useNavigate();
     let [searchParams,] = useSearchParams(window.navigator.search );
     const roomId=searchParams.get('roomId');
@@ -55,17 +54,20 @@ const LeaderBoard = () => {
           Start New Game 
         </button>
 
-        <button
-          onClick={() => {
+{roomId &&  socketState.socketConnection ?
+  <button
+  onClick={() => {
 
-            
-            if(socketState.socketConnection && roomId){
-              socketState.socketConnection.emit('leaveRoom',{roomId});
-            }
-          }}
-        >
-          Leave Room
-        </button>
+    
+    if(socketState.socketConnection && roomId){
+      socketState.socketConnection.emit('leaveRoom',{roomId});
+    }
+  }}
+>
+  Leave Room
+</button>
+:null}
+      
 
 
         </div>

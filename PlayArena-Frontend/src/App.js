@@ -2,8 +2,6 @@ import "./App.css";
 import {
   createBrowserRouter,
   RouterProvider,
-  Route,
-  Link,
 } from "react-router-dom";
 import { CookiesProvider } from 'react-cookie';
 import Hero from "./Components/Hero";

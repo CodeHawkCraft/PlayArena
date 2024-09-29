@@ -150,7 +150,7 @@ io.on('connection', (socket) => {
 
 
   // Handle disconnection if needed
-  socket.on('disconnect', (data) => {
+  socket.on('disconnect', () => {
   });
 });
 

@@ -8,9 +8,9 @@ import { useAppContext } from '../contexts/Context';
 import { useRef } from 'react';
 import { useCookies } from 'react-cookie';
 const Games = () => {
-  const backendApi = process.env.BACKEND_DEV;
+  const backendApi = process.env.BACKEND_DEV || 'https://playarena-backend.onrender.com';
   console.log("Backend Api is ------> ",backendApi)
-  const frontendURl=process.env.REACT_APP_FRONTEND_DEV;
+  const frontendURl=process.env.REACT_APP_FRONTEND_DEV || 'https://playarena-murex.vercel.app/';
   const [cookies, setCookie] = useCookies(['playerId'])
     const [name,setName]=useState('');
     const inputElement = useRef();

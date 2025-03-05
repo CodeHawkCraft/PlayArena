@@ -1,12 +1,16 @@
-require('dotenv').config();
+const dotEnv = require("dotenv");
 const express = require('express');
 const { createServer } = require('http');
 const cors = require('cors');
 const socketIO = require('socket.io');
 const { v4: uuidv4 } = require('uuid'); // Import the v4 version of uuid
 
-console.log('frontend url is ----> ',process.env.FRONTEND_URL);
-
+if (process.env.NODE_ENV !== "prod") {
+  const configFile = `./.env.${process.env.NODE_ENV}`;
+  dotEnv.config({ path: configFile });
+} else {
+  dotEnv.config();
+}
 const app = express();
 app.use(cors({
   origin: process.env.FRONTEND_URL,
@@ -14,9 +18,6 @@ app.use(cors({
 
 const server = createServer(app);
 
-// app.get('/api', (req, res) => {
-//   res.send('<h1>Multiplayer Chess Backend</h1>');
-// });
 
 let roomStates = {}; // Object to store all active rooms and their states
 
@@ -59,8 +60,6 @@ function getRoomID() {
 
 // Check if username already exists in the room
 function userNameError(roomId, userName) {
-  // console.log('users is ------> ',roomStates[roomId].users);
-  
   return roomStates[roomId].users.some((el)=>el.userName==userName);
 }
 

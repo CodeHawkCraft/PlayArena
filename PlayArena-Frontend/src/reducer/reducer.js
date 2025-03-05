@@ -8,7 +8,7 @@ export const reducer = (state, action) => {
         case actionTypes.NEW_MOVE: {
             const { newPosition, newMove, lostPieces: newLostPieces } = action.payload;
             const { position, movesList, turn, lostPieces } = updatedState;
-
+            console.log("lost pieces",newLostPieces);
             updatedState = {
                 ...updatedState,
                 position: [...position, newPosition],

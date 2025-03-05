@@ -5,16 +5,16 @@ const LostPlayers = () => {
   const { appState: { lostPieces } } = useAppContext();
 const [lostPiecesObject,setLostPiecesObject]=useState({});
 useEffect(()=>{
+  let newObject={};
     lostPieces.forEach((el)=>{
-        const newObject={...lostPiecesObject};
         if(newObject[el]){
             newObject[el]+=1;
         }
         else{
             newObject[el]=1;
         }
-        setLostPiecesObject(newObject);
     })
+    setLostPiecesObject(newObject);
 },[lostPieces]);
   return (
 <div className="relative   flex flex-col gap-3 ">

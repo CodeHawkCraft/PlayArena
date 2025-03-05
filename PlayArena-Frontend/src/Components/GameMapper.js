@@ -1,24 +1,23 @@
-import React from 'react'
-import { useParams } from 'react-router-dom';
-import ChessBoard from './Games/Chess/ChessBoard';
+import React from "react";
+import { useParams } from "react-router-dom";
+import ChessBoard from "./Games/Chess/ChessBoard";
 import { useNavigate } from "react-router-dom";
-import LeaderBoard from './Games/Chess/LeaderBoard';
-import CircularLoading from '../helpers/Components/CircularLoading';
-import { useSocketContext } from '../contexts/SocketContext';
+import LeaderBoard from "./Games/Chess/LeaderBoard";
+import CircularLoading from "../helpers/Components/CircularLoading";
+import { useSocketContext } from "../contexts/SocketContext";
 
 const GameMapper = () => {
-    const navigate = useNavigate();
+  const { id } = useParams();
   return (
     <>
- 
-          <div className='min-h-full gameMapper  justify-center  p-4 lg:px-10  flex-col  lg:flex-row  flex  gap-4  w-full'>  
+      {id == "chess" && (
+        <div className="min-h-full gameMapper  justify-center  p-4 lg:px-10  flex-col  lg:flex-row  flex  gap-4  w-full">
           <ChessBoard></ChessBoard>
-         
           <LeaderBoard></LeaderBoard>
-         </div>
-         
+        </div>
+      )}
     </>
-  )
-}
+  );
+};
 
-export default GameMapper
+export default GameMapper;
